@@ -63,19 +63,19 @@ services:
       - redis
 
   temporal:
-    image: temporalio/auto-setup:1.21.5
+    image: temporalio/auto-setup:1.27.2
     container_name: temporal-server
     ports:
       - "${TEMPORAL_PORT}:7233"
     environment:
-      - DB=mysql
+      - DB=mysql8
       - DB_PORT=3306
       - MYSQL_USER=root
       - MYSQL_PWD=${MYSQL_ROOT_PASSWORD}
       - MYSQL_SEEDS=mysql
       - DYNAMIC_CONFIG_FILE_PATH=config/dynamicconfig/development.yaml
       - ENABLE_ES=false
-      - VISIBILITY_STORE=mysql
+      - VISIBILITY_STORE=mysql8
       - DEFAULT_NAMESPACE=${TEMPORAL_NAMESPACE}
     volumes:
       - ./temporal-config:/etc/temporal/config/dynamicconfig
@@ -88,7 +88,7 @@ services:
         condition: service_healthy
 
   temporal-ui:
-    image: temporalio/ui:2.18.0
+    image: temporalio/ui:2.20.0
     container_name: temporal-ui
     ports:
       - "${TEMPORAL_UI_PORT}:8080"
