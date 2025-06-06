@@ -11,6 +11,10 @@ services:
       MYSQL_DATABASE: ${MYSQL_DATABASE}
       MYSQL_USER: ${MYSQL_USER}
       MYSQL_PASSWORD: ${MYSQL_PASSWORD}
+    command: >
+      --default-authentication-plugin=mysql_native_password
+      --character-set-server=utf8mb4
+      --collation-server=utf8mb4_unicode_ci
     volumes:
       - mysql-data:/var/lib/mysql
     networks:
@@ -24,8 +28,8 @@ services:
           "-h",
           "localhost",
           "-u",
-          "${MYSQL_USER}",
-          "-p${MYSQL_PASSWORD}",
+          "root",
+          "-p${MYSQL_ROOT_PASSWORD}",
         ]
       interval: 5s
       timeout: 5s
@@ -66,8 +70,8 @@ services:
     environment:
       - DB=mysql
       - DB_PORT=3306
-      - MYSQL_USER=${MYSQL_USER}
-      - MYSQL_PWD=${MYSQL_PASSWORD}
+      - MYSQL_USER=root
+      - MYSQL_PWD=${MYSQL_ROOT_PASSWORD}
       - MYSQL_SEEDS=mysql
       - DYNAMIC_CONFIG_FILE_PATH=config/dynamicconfig/development.yaml
       - ENABLE_ES=false
