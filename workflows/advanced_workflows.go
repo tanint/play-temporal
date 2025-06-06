@@ -57,6 +57,12 @@ func ChildWorkflow(ctx workflow.Context, params ChildWorkflowParams) (ChildWorkf
 	logger := workflow.GetLogger(ctx)
 	logger.Info("ChildWorkflow started", "params", params)
 
+	// Configure activity options with timeout
+	ao := workflow.ActivityOptions{
+		StartToCloseTimeout: 10 * time.Second,
+	}
+	ctx = workflow.WithActivityOptions(ctx, ao)
+
 	startTime := workflow.Now(ctx)
 
 	// Simulate some work
@@ -84,6 +90,12 @@ type SignalWorkflowData struct {
 func SignalWorkflow(ctx workflow.Context, waitTime time.Duration) ([]string, error) {
 	logger := workflow.GetLogger(ctx)
 	logger.Info("SignalWorkflow started", "waitTime", waitTime)
+
+	// Configure activity options with timeout
+	ao := workflow.ActivityOptions{
+		StartToCloseTimeout: 10 * time.Second,
+	}
+	ctx = workflow.WithActivityOptions(ctx, ao)
 
 	// Define a channel for the signal
 	signalChan := workflow.GetSignalChannel(ctx, "signal-channel")

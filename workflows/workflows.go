@@ -13,6 +13,12 @@ func GreetingWorkflow(ctx workflow.Context, name string) (string, error) {
 	logger := workflow.GetLogger(ctx)
 	logger.Info("GreetingWorkflow started", "name", name)
 
+	// Configure activity options with timeout
+	ao := workflow.ActivityOptions{
+		StartToCloseTimeout: 10 * time.Second,
+	}
+	ctx = workflow.WithActivityOptions(ctx, ao)
+
 	var result string
 	err := workflow.ExecuteActivity(ctx, activities.GreetingActivity, name).Get(ctx, &result)
 	if err != nil {

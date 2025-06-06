@@ -17,6 +17,12 @@ func CounterWorkflow(ctx workflow.Context, initialValue int) (int, error) {
 	logger := workflow.GetLogger(ctx)
 	logger.Info("CounterWorkflow started", "initialValue", initialValue)
 
+	// Configure activity options with timeout
+	ao := workflow.ActivityOptions{
+		StartToCloseTimeout: 10 * time.Second,
+	}
+	ctx = workflow.WithActivityOptions(ctx, ao)
+
 	// Create a counter with the initial value
 	counter := Counter{Value: initialValue}
 
@@ -77,6 +83,12 @@ func CounterWorkflow(ctx workflow.Context, initialValue int) (int, error) {
 func UpdateableWorkflow(ctx workflow.Context) (string, error) {
 	logger := workflow.GetLogger(ctx)
 	logger.Info("UpdateableWorkflow started")
+
+	// Configure activity options with timeout
+	ao := workflow.ActivityOptions{
+		StartToCloseTimeout: 10 * time.Second,
+	}
+	ctx = workflow.WithActivityOptions(ctx, ao)
 
 	// State that can be updated
 	state := struct {
