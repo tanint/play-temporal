@@ -3,7 +3,7 @@ package workflows
 import (
 	"time"
 
-	"github.com/temporalio/play-temporal/activities"
+	"github.com/tanint/play-temporal/activities"
 	"go.temporal.io/sdk/temporal"
 	"go.temporal.io/sdk/workflow"
 )

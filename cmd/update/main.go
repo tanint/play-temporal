@@ -10,8 +10,8 @@ import (
 	"strings"
 	"time"
 
-	"github.com/temporalio/play-temporal/config"
-	"github.com/temporalio/play-temporal/workflows"
+	"github.com/tanint/play-temporal/config"
+	"github.com/tanint/play-temporal/workflows"
 	"go.temporal.io/sdk/client"
 )
 

@@ -1,4 +1,4 @@
-module github.com/temporalio/play-temporal
+module github.com/tanint/play-temporal
 
 go 1.24.2
 
