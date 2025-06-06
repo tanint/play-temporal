@@ -1,0 +1,116 @@
+version: "3.8"
+
+services:
+  mysql:
+    image: mysql:8.0
+    container_name: temporal-mysql
+    ports:
+      - "3306:3306"
+    environment:
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+      MYSQL_DATABASE: ${MYSQL_DATABASE}
+      MYSQL_USER: ${MYSQL_USER}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD}
+    volumes:
+      - mysql-data:/var/lib/mysql
+    networks:
+      - temporal-network
+    healthcheck:
+      test:
+        [
+          "CMD",
+          "mysqladmin",
+          "ping",
+          "-h",
+          "localhost",
+          "-u",
+          "${MYSQL_USER}",
+          "-p${MYSQL_PASSWORD}",
+        ]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  redis:
+    image: redis:6.2-alpine
+    container_name: temporal-redis
+    ports:
+      - "${REDIS_PORT}:6379"
+    volumes:
+      - redis-data:/data
+    networks:
+      - temporal-network
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  redis-commander:
+    image: rediscommander/redis-commander:latest
+    container_name: temporal-redis-ui
+    ports:
+      - "${REDIS_UI_PORT}:8081"
+    environment:
+      - REDIS_HOSTS=local:redis:6379
+    networks:
+      - temporal-network
+    depends_on:
+      - redis
+
+  temporal:
+    image: temporalio/auto-setup:1.21.5
+    container_name: temporal-server
+    ports:
+      - "${TEMPORAL_PORT}:7233"
+    environment:
+      - DB=mysql
+      - DB_PORT=3306
+      - MYSQL_USER=${MYSQL_USER}
+      - MYSQL_PWD=${MYSQL_PASSWORD}
+      - MYSQL_SEEDS=mysql
+      - DYNAMIC_CONFIG_FILE_PATH=config/dynamicconfig/development.yaml
+      - ENABLE_ES=false
+      - VISIBILITY_STORE=mysql
+      - DEFAULT_NAMESPACE=${TEMPORAL_NAMESPACE}
+    volumes:
+      - ./temporal-config:/etc/temporal/config/dynamicconfig
+    networks:
+      - temporal-network
+    depends_on:
+      mysql:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+
+  temporal-ui:
+    image: temporalio/ui:2.18.0
+    container_name: temporal-ui
+    ports:
+      - "${TEMPORAL_UI_PORT}:8080"
+    environment:
+      - TEMPORAL_ADDRESS=temporal:7233
+      - TEMPORAL_CORS_ORIGINS=http://localhost:3000
+      - TEMPORAL_NAMESPACE=${TEMPORAL_NAMESPACE}
+    networks:
+      - temporal-network
+    depends_on:
+      - temporal
+
+networks:
+  temporal-network:
+    driver: bridge
+
+volumes:
+  mysql-data:
+    driver: local
+    driver_opts:
+      type: none
+      device: ${MYSQL_DATA_DIR:-./data/mysql}
+      o: bind
+  redis-data:
+    driver: local
+    driver_opts:
+      type: none
+      device: ${REDIS_DATA_DIR:-./data/redis}
+      o: bind

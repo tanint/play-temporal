@@ -8,6 +8,7 @@ import (
 	"os"
 	"time"
 
+	"github.com/temporalio/play-temporal/config"
 	"github.com/temporalio/play-temporal/workflows"
 	"go.temporal.io/sdk/client"
 )
@@ -25,7 +26,7 @@ func main() {
 	flag.Parse()
 
 	// Create the client object just once per process
-	c, err := client.Dial(client.Options{})
+	c, err := client.Dial(config.GetTemporalClientOptions())
 	if err != nil {
 		log.Fatalln("Unable to create Temporal client", err)
 	}
