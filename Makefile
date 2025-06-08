@@ -92,6 +92,10 @@ subscription:
 recurring-billing:
 	TEMPORAL_HOST=$(TEMPORAL_HOST) TEMPORAL_NAMESPACE=$(TEMPORAL_NAMESPACE) go run cmd/billing/main.go -subscription "$(SUBSCRIPTION)" -customer "$(CUSTOMER)"
 
+.PHONY: create-schedule
+create-schedule:
+	./scripts/create-schedule.sh "$(SUBSCRIPTION)" "$(CUSTOMER)"
+
 # Signal commands
 .PHONY: send-signal
 send-signal:
@@ -164,6 +168,7 @@ help:
 	@echo "  make continue-as-new COUNT=0 MAX=10               Run continue-as-new workflow"
 	@echo "  make subscription CUSTOMER=\"cust123\" PLAN=\"premium\" Run subscription workflow"
 	@echo "  make recurring-billing SUBSCRIPTION=\"sub_123\" CUSTOMER=\"cust123\" Run recurring billing workflow"
+	@echo "  make create-schedule SUBSCRIPTION=\"sub_123\" CUSTOMER=\"cust123\" Create a visible schedule in Temporal UI"
 	@echo ""
 	@echo "Signal Commands:"
 	@echo "  make send-signal WORKFLOW_ID=\"id\" MESSAGE=\"msg\"  Send signal to workflow"

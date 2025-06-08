@@ -251,13 +251,28 @@ make subscription CUSTOMER="customer123" PLAN="premium-monthly"
 
 ### Recurring Billing
 
+There are two ways to set up recurring billing:
+
+#### 1. Using CronSchedule in workflow options
+
 ```bash
 make recurring-billing SUBSCRIPTION="sub_123456" CUSTOMER="customer123"
 ```
 
+This starts a workflow with a cron schedule that will run monthly. However, this won't appear in the Schedules tab of the Temporal UI.
+
+#### 2. Using Temporal Schedules (recommended)
+
+```bash
+make create-schedule SUBSCRIPTION="sub_123456" CUSTOMER="customer123"
+```
+
+This creates a schedule using the Temporal CLI that will be visible in the Schedules tab of the Temporal UI.
+
 **Key concepts:**
 
 - Cron-scheduled workflows
+- Temporal Schedules
 - Independent workflow execution
 - Time-based scheduling
 - Simulated billing cycles
@@ -270,7 +285,7 @@ make recurring-billing SUBSCRIPTION="sub_123456" CUSTOMER="customer123"
 4. Send invoice email
 5. Update subscription status
 
-The recurring billing workflow runs monthly using Temporal's cron schedule feature, ensuring reliable execution of billing cycles even after system restarts.
+The recurring billing workflow runs monthly using either Temporal's CronSchedule feature or the Schedules feature, ensuring reliable execution of billing cycles even after system restarts. Using the Schedules feature provides better visibility and management through the Temporal UI.
 
 ## Best Practices Demonstrated
 

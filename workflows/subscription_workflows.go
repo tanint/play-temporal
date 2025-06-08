@@ -100,9 +100,19 @@ type RecurringBillingParams struct {
 }
 
 // RecurringBillingWorkflow handles the recurring billing for a subscription
+// This workflow is designed to be used with a cron schedule
 func RecurringBillingWorkflow(ctx workflow.Context, params RecurringBillingParams) error {
 	logger := workflow.GetLogger(ctx)
-	logger.Info("RecurringBillingWorkflow started", "subscriptionID", params.SubscriptionID)
+
+	// Get information about the current workflow execution
+	info := workflow.GetInfo(ctx)
+
+	// Log workflow execution details including cron schedule
+	logger.Info("RecurringBillingWorkflow started",
+		"subscriptionID", params.SubscriptionID,
+		"workflowID", info.WorkflowExecution.ID,
+		"runID", info.WorkflowExecution.RunID,
+		"cronSchedule", info.CronSchedule)
 
 	// Configure activity options with longer timeouts for reliability
 	ao := workflow.ActivityOptions{
@@ -127,6 +137,12 @@ func RecurringBillingWorkflow(ctx workflow.Context, params RecurringBillingParam
 		logger.Error("Failed to register query handler", "error", err)
 		return err
 	}
+
+	// For cron workflows, we don't need to wait for the next billing date
+	// The cron schedule will automatically trigger the workflow at the right time
+	logger.Info("Processing billing cycle for subscription",
+		"subscriptionID", params.SubscriptionID,
+		"billingDate", workflow.Now(ctx).Format(time.RFC3339))
 
 	// Mock getting the subscription details
 	// In a real implementation, we would fetch the current subscription state
