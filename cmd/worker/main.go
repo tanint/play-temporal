@@ -38,11 +38,23 @@ func main() {
 	w.RegisterWorkflow(workflows.CounterWorkflow)
 	w.RegisterWorkflow(workflows.UpdateableWorkflow)
 
+	// Register subscription workflows
+	w.RegisterWorkflow(workflows.SubscriptionWorkflow)
+	w.RegisterWorkflow(workflows.RecurringBillingWorkflow)
+
 	// Register activities
 	w.RegisterActivity(activities.GreetingActivity)
 	w.RegisterActivity(activities.FarewellActivity)
 	w.RegisterActivity(activities.LongRunningActivity)
 	w.RegisterActivity(activities.ErrorProneActivity)
+
+	// Register subscription activities
+	w.RegisterActivity(activities.CreateSubscriptionActivity)
+	w.RegisterActivity(activities.CalculateChargesActivity)
+	w.RegisterActivity(activities.GenerateInvoiceActivity)
+	w.RegisterActivity(activities.ProcessPaymentActivity)
+	w.RegisterActivity(activities.SendInvoiceEmailActivity)
+	w.RegisterActivity(activities.UpdateSubscriptionStatusActivity)
 
 	// Start listening to the Task Queue
 	log.Println("Starting Temporal worker...")

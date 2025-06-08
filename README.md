@@ -223,6 +223,35 @@ make query-state WORKFLOW_ID="id"
 - Dynamic updates with maps
 - Multiple update handlers
 
+## Subscription Workflow
+
+Simulates a subscription billing system similar to Stripe billing with monthly recurring charges.
+
+```bash
+make subscription CUSTOMER="customer123" PLAN="premium-monthly"
+```
+
+**Key concepts:**
+
+- Business process orchestration
+- Multi-step activity sequences
+- Child workflow for recurring processes
+- Time-based scheduling
+- State management across billing cycles
+- Error handling with continuation
+
+**Workflow steps:**
+
+1. Create subscription
+2. Calculate initial charges
+3. Generate invoice
+4. Process payment
+5. Send invoice email
+6. Update subscription status
+7. Schedule recurring billing
+
+The recurring billing workflow runs monthly and performs similar steps for each billing cycle.
+
 ## Best Practices Demonstrated
 
 1. **Activity Options**: All workflows set appropriate timeouts for activities
@@ -232,6 +261,7 @@ make query-state WORKFLOW_ID="id"
 5. **Signals and Queries**: Communication with running workflows
 6. **Updates**: Safe state updates in long-running workflows
 7. **Continue-as-New**: Managing workflow history size
+8. **Business Process Modeling**: Subscription workflow demonstrates modeling real-world business processes
 
 ## Temporal Concepts Covered
 
@@ -243,6 +273,7 @@ make query-state WORKFLOW_ID="id"
 - Updates
 - Continue-as-New
 - Error Handling
+- Workflow Scheduling
 
 ## Project Structure
 
@@ -250,9 +281,12 @@ make query-state WORKFLOW_ID="id"
 - `cmd/starter/main.go`: Workflow starter
 - `cmd/signal/main.go`: Signal sender and query handler
 - `cmd/update/main.go`: Update sender and query handler
+- `cmd/subscription/main.go`: Subscription workflow starter
 - `workflows/workflows.go`: Basic workflow implementations
 - `workflows/advanced_workflows.go`: Advanced workflow implementations
 - `workflows/update_workflows.go`: Update workflow implementations
+- `workflows/subscription_workflows.go`: Subscription workflow implementations
 - `activities/activities.go`: Activity implementations
+- `activities/subscription_activities.go`: Subscription activity implementations
 - `config/config.go`: Configuration utilities
 - `docker-compose.yml`: Docker Compose configuration for Temporal server

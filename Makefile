@@ -83,6 +83,11 @@ signal:
 continue-as-new:
 	TEMPORAL_HOST=$(TEMPORAL_HOST) TEMPORAL_NAMESPACE=$(TEMPORAL_NAMESPACE) go run cmd/starter/main.go -workflow continue-as-new -count $(COUNT) -max $(MAX)
 
+# Subscription commands
+.PHONY: subscription
+subscription:
+	TEMPORAL_HOST=$(TEMPORAL_HOST) TEMPORAL_NAMESPACE=$(TEMPORAL_NAMESPACE) go run cmd/subscription/main.go -customer "$(CUSTOMER)" -plan "$(PLAN)"
+
 # Signal commands
 .PHONY: send-signal
 send-signal:
@@ -153,6 +158,7 @@ help:
 	@echo "  make parent NAME=\"Your Name\" DURATION=5         Run parent-child workflow"
 	@echo "  make signal WAIT=60                               Run signal workflow"
 	@echo "  make continue-as-new COUNT=0 MAX=10               Run continue-as-new workflow"
+	@echo "  make subscription CUSTOMER=\"cust123\" PLAN=\"premium\" Run subscription workflow"
 	@echo ""
 	@echo "Signal Commands:"
 	@echo "  make send-signal WORKFLOW_ID=\"id\" MESSAGE=\"msg\"  Send signal to workflow"
