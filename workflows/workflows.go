@@ -104,10 +104,18 @@ func LongRunningWorkflow(ctx workflow.Context, durationSeconds int) (string, err
 	logger := workflow.GetLogger(ctx)
 	logger.Info("LongRunningWorkflow started", "duration", durationSeconds)
 
-	// Configure activity options with a longer timeout
+	// Configure activity options with a longer timeout and retry policy
 	ao := workflow.ActivityOptions{
-		StartToCloseTimeout: time.Duration(durationSeconds+5) * time.Second,
-		HeartbeatTimeout:    5 * time.Second,
+		StartToCloseTimeout:    time.Duration(durationSeconds+10) * time.Second,
+		ScheduleToStartTimeout: time.Minute,
+		ScheduleToCloseTimeout: time.Duration(durationSeconds+15) * time.Second,
+		HeartbeatTimeout:       10 * time.Second,
+		RetryPolicy: &temporal.RetryPolicy{
+			InitialInterval:    time.Second,
+			BackoffCoefficient: 2.0,
+			MaximumInterval:    time.Minute,
+			MaximumAttempts:    3,
+		},
 	}
 	ctx = workflow.WithActivityOptions(ctx, ao)
 
