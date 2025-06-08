@@ -223,9 +223,11 @@ make query-state WORKFLOW_ID="id"
 - Dynamic updates with maps
 - Multiple update handlers
 
-## Subscription Workflow
+## Subscription Workflow System
 
 Simulates a subscription billing system similar to Stripe billing with monthly recurring charges.
+
+### Creating a Subscription
 
 ```bash
 make subscription CUSTOMER="customer123" PLAN="premium-monthly"
@@ -235,9 +237,7 @@ make subscription CUSTOMER="customer123" PLAN="premium-monthly"
 
 - Business process orchestration
 - Multi-step activity sequences
-- Child workflow for recurring processes
-- Time-based scheduling
-- State management across billing cycles
+- State management
 - Error handling with continuation
 
 **Workflow steps:**
@@ -248,9 +248,29 @@ make subscription CUSTOMER="customer123" PLAN="premium-monthly"
 4. Process payment
 5. Send invoice email
 6. Update subscription status
-7. Schedule recurring billing
 
-The recurring billing workflow runs monthly and performs similar steps for each billing cycle.
+### Recurring Billing
+
+```bash
+make recurring-billing SUBSCRIPTION="sub_123456" CUSTOMER="customer123"
+```
+
+**Key concepts:**
+
+- Cron-scheduled workflows
+- Independent workflow execution
+- Time-based scheduling
+- Simulated billing cycles
+
+**Workflow steps:**
+
+1. Calculate charges for the billing period
+2. Generate invoice
+3. Process payment
+4. Send invoice email
+5. Update subscription status
+
+The recurring billing workflow runs monthly using Temporal's cron schedule feature, ensuring reliable execution of billing cycles even after system restarts.
 
 ## Best Practices Demonstrated
 
@@ -282,6 +302,7 @@ The recurring billing workflow runs monthly and performs similar steps for each 
 - `cmd/signal/main.go`: Signal sender and query handler
 - `cmd/update/main.go`: Update sender and query handler
 - `cmd/subscription/main.go`: Subscription workflow starter
+- `cmd/billing/main.go`: Recurring billing workflow starter
 - `workflows/workflows.go`: Basic workflow implementations
 - `workflows/advanced_workflows.go`: Advanced workflow implementations
 - `workflows/update_workflows.go`: Update workflow implementations

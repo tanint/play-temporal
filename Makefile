@@ -88,6 +88,10 @@ continue-as-new:
 subscription:
 	TEMPORAL_HOST=$(TEMPORAL_HOST) TEMPORAL_NAMESPACE=$(TEMPORAL_NAMESPACE) go run cmd/subscription/main.go -customer "$(CUSTOMER)" -plan "$(PLAN)"
 
+.PHONY: recurring-billing
+recurring-billing:
+	TEMPORAL_HOST=$(TEMPORAL_HOST) TEMPORAL_NAMESPACE=$(TEMPORAL_NAMESPACE) go run cmd/billing/main.go -subscription "$(SUBSCRIPTION)" -customer "$(CUSTOMER)"
+
 # Signal commands
 .PHONY: send-signal
 send-signal:
@@ -159,6 +163,7 @@ help:
 	@echo "  make signal WAIT=60                               Run signal workflow"
 	@echo "  make continue-as-new COUNT=0 MAX=10               Run continue-as-new workflow"
 	@echo "  make subscription CUSTOMER=\"cust123\" PLAN=\"premium\" Run subscription workflow"
+	@echo "  make recurring-billing SUBSCRIPTION=\"sub_123\" CUSTOMER=\"cust123\" Run recurring billing workflow"
 	@echo ""
 	@echo "Signal Commands:"
 	@echo "  make send-signal WORKFLOW_ID=\"id\" MESSAGE=\"msg\"  Send signal to workflow"
